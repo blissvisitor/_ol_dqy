@@ -1,0 +1,1347 @@
+﻿@model ZJKRiskManage.Model.DTO_Model.GetHomeIndexModel
+<link href="~/Content/Scripts/ol/ol.css" rel="stylesheet" />
+<script src="~/Content/Scripts/ol/ol.js"></script>
+<script src="~/Content/Scripts/gcjtobd.js"></script>
+<script src="~/Content/Scripts/jquery-1.8.2.js"></script>
+<script src="~/Script/highstock.js"></script>
+<script src="~/Content/Scripts/jquery.autocomplete.js"></script>
+<script src="~/Script/highcharts-more.js"></script>
+<link href="~/Content/Styles/main.css" rel="stylesheet" />
+<style type="text/css">
+    .map-change-btn
+    {
+        position: absolute;
+        right: 17px;
+        bottom: 21px;
+        border-radius: 3px;
+        background: #fff;
+        box-shadow: 1px 1px 2px #666;
+        border: 1px solid #0073cb;
+        overflow: hidden;
+        z-index: 99;
+    }
+
+        .map-change-btn li
+        {
+            float: left;
+            width: 60px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            .map-change-btn li.active
+            {
+                color: #fff;
+                background: #0073cb;
+            }
+
+    .detail_search
+    {
+        line-height: 35px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        padding-left: 35px;
+        background: url(../Content/Images/sousuo.png) no-repeat 12px center;
+        background-color: #fff;
+    }
+
+        .detail_search:hover
+        {
+            background-color: #ebebeb;
+        }
+</style>
+<div class="main-box">
+    <div class="main-container">
+        <div class="main-left">
+            <div class="left-top">
+                <div class="risk-box fl">
+                    <p class="title">风险值</p>
+                    <div id="SafeNum" style="cursor: pointer; width: 100%; height: 90%;"
+                        class="risk">
+                    </div>
+                </div>
+                <div class="four-list fl">
+                    <div class="active">
+                        <dl>
+                            <dt>重大危险源</dt>
+                            <dd>@Model.ZDWXY</dd>
+                        </dl>
+                    </div>
+                    <div>
+                        <dl>
+                            <dt>重大隐患</dt>
+                            <dd>@Model.AccidentHidden</dd>
+                        </dl>
+                    </div>
+                    <div>
+                        <dl>
+                            <dt>重大风险点</dt>
+                            <dd>@Model.ZDWXD</dd>
+                        </dl>
+                    </div>
+
+                    <div>
+                        <dl>
+                            <dt>脆弱性目标</dt>
+                            <dd>@Model.CRXMB</dd>
+                        </dl>
+                    </div>
+
+                </div>
+            </div>
+            <div class="left-trade ">
+                <p class="title">
+                    行业风险
+                </p>
+                <div class="trade-box">
+                    <ul class="trade-class">
+                        <li class="active">工业风险源</li>
+                        <li>人员密集场所</li>
+                        <li>公共设施</li>
+                        <li>其他</li>
+                    </ul>
+                    <div class="trade-list-box">
+                        <div class="trade-list">
+                            @{
+                                var count = 1;
+                                if (Model.industryNameList != null && Model.industryNameList.Count > 0)
+                                {
+                                    foreach (var item in Model.industryNameList)
+                                    {
+                                        if (count < 9)
+                                        {
+                                <div>
+                                    <span>@item.Name</span>
+                                    <strong>@item.Count</strong>
+                                </div>
+                                        }
+                                        count++;
+                                    }
+                                }
+                            }
+                            @*<div class="active">
+                                <span>化学和危险化学品</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>工贸</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>建筑施工</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>民用爆破器材</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>煤矿</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>金属非金属矿山</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>烟花爆竹</span>
+                                <strong>121</strong>
+                            </div>
+                            <div>
+                                <span>冶金等八大行业</span>
+                                <strong>121</strong>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left-area">
+                <div class="dbg">
+                    <p class="title">区域风险四色图</p>
+                    <div class="area-box clearfix">
+                        @{
+                            if (Model.quyuNameList != null && Model.quyuNameList.Count > 0)
+                            {
+                                foreach (var item in Model.quyuNameList)
+                                { 
+                            <div>
+                                <div>
+                                    <span>@item.Name</span>
+                                    <strong class="@item.Color">@item.Count</strong>
+                                </div>
+                            </div>
+                                }
+                            }
+                        }
+                        @*<div>
+                            <div>
+                                <span>桥东区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥西区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>下花园区</span>
+                                <strong class="red">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>宣化区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>崇礼区</span>
+                                <strong class="red">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>万全区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>康保县</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>张北县</span>
+                                <strong class="yellow">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>沽源县</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>尚义县</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥东</span>
+                                <strong class="org">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥东区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥东区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥东区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>桥东区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>察北管理区</span>
+                                <strong class="blue">23</strong>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+
+            </div>
+            <div class="left-bottom">
+                <div class="right-list-child">
+                    <a href="#2">
+                        <img src="~/Content/Images/Search/r-icon1.png" />
+                        应急资源
+                    </a>
+                </div>
+                <div class="right-list2">
+                    <a href="#2">
+                        <img src="~/Content/Images/Search/r-icon2.png" />
+                        在线监测
+                    </a>
+                </div>
+                <div class="right-list3">
+                    <a href="#2">
+                        <img src="~/Content/Images/Search/r-icon3.png" />
+                        视频监控
+                    </a>
+                </div>
+                <div>
+                    <a href="#2" onclick="OpenTabs('大数据分析')">
+                        <img src="~/Content/Images/Search/r-icon4.png" />
+                        大数据分析
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="main-right">
+            <div class="map-search">
+                <input type="text" id="serchTxt" placeholder="模糊搜索" style="font-size: 18px; padding-left: 5px;" />
+                <button type="button">搜索</button>
+            </div>
+            <div class="map-btn">
+                <a href="#2" class="" title="清除筛选">
+                    <img id="changeCounty" src="~/Content/Images/Search/kai.png" alt="">
+                </a>
+                <a href="~/Main/download" >
+                    <img src="~/Content/Images/Search/download.png" alt="">
+                </a>
+                <a href="#2" class="clear-btn" title="清除筛选">
+                    <img src="~/Content/Images/Search/clear.png" alt="">
+                </a>
+                <a href="#2" class="return-back" onclick="backCenter()">
+                    <img src="~/Content/Images/Search/back-address.png" alt="">
+                </a>
+            </div>
+            <ul class="map-change-btn">
+                <li class="active">地图</li>
+                <li>卫星</li>
+            </ul>
+            <div class="right-map" id="mapRisk" style="height: 100%; overflow: hidden;">
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class=""></a>
+                    <div id="popup-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    var clickName = "";
+    var geoserverUrl = 'http://10.0.0.4:8080/geoserver/';//内网
+    //geoserverUrl = 'http://124.192.234.186:8000/geoserver/';//外网
+    var map, view, cityLayer, countyLayer, companyLayer, factoryLayer;
+    var container = document.getElementById('popup');
+    var content = document.getElementById('popup-content');
+    var closer = document.getElementById('popup-closer');
+    var projection = ol.proj.get("EPSG:3857");
+    var center = [12806018.59297647, 4996988.103060308], zoom = 8;
+    var googleMapLayer = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: 'http://www.google.cn/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i345013117!3m8!2szh-CN!3scn!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0'
+        })
+    });
+    var googleRasterLayer = new ol.layer.Tile({
+        source: new ol.source.TileImage({ url: 'http://mt2.google.cn/vt/lyrs=y&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=G' }),
+        visible: false
+    });
+    var overlay = new ol.Overlay(({
+        element: container,
+        autoPan: true,
+        autoPanAnimation: {
+            duration: 250
+        }
+    }));
+
+    closer.onclick = function () {
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    };
+    function initMap() {
+        createMap();//创建地图
+        setMapEvent();//设置地图事件
+
+        //GetQuyuByName();
+        //GetQuyuByName2();
+    }
+    //创建地图函数：
+
+    function createMap() {
+        view = new ol.View({
+            center: center,
+            projection: 'EPSG:3857',
+            zoom: zoom
+            //minZoom:zoom-1
+        });
+        baidu_raster = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                tileUrlFunction: function (tileCoord) {
+                    var x = 'C' + zeroPad(tileCoord[1], 8, 16);
+                    var y = 'R' + zeroPad(-tileCoord[2], 8, 16);
+                    var z = 'L' + zeroPad(tileCoord[0], 2, 10);
+                    return url + '/' + z + '/' + y + '/' + x + '.png';
+                },
+                projection: 'EPSG:3857'
+            })
+        });
+        cityLayer = new ol.layer.Image({
+            source: new ol.source.ImageWMS({
+                params: {
+                    VERSION: '1.1.0',
+                    STYLE: '',
+                    LAYERS: 'sf:city_zjk',
+                    FORMAT: 'image/png'
+                },
+                url: geoserverUrl + 'sf/wms',
+                projection: projection
+            })
+        });
+        countyLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: geoserverUrl + 'sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:zjk_county&maxFeatures=1000&outputFormat=application%2Fjson',
+                format: new ol.format.GeoJSON()
+            }),
+            style: function (f, res) {
+                var fillColor = 'rgba(0,0,0,0)';
+                var weight = parseInt(f.getProperties().weight);
+                if (res > 152) {
+                    factoryLayer.setVisible(false);
+                    if (weight >= 0 && weight < 3) {
+                        fillColor = '#0066ce';
+                    } else if (weight >= 3 && weight < 6) {
+                        fillColor = '#f5e812';
+                    } else if (weight >= 6 && weight < 9) {
+                        fillColor = '#ef7216';
+                    } else if (weight >= 9) {
+                        fillColor = '#ea3131';
+                    }
+
+                } else {
+                    factoryLayer.setVisible(true);
+                }
+                return new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: fillColor
+                    }),
+                    stroke: new ol.style.Stroke({
+                        width: '3',
+                        color: '#9d9d9d'
+                    })
+                })
+            }
+        });
+        var points = [[115.812474, 41.853494], [115.82196, 41.853494], [115.823685, 41.851775], [115.813911, 41.850271], [115.812474, 41.853494]]
+        factoryLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: geoserverUrl + 'sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:factory&maxFeatures=100&outputFormat=application%2Fjson',
+                format: new ol.format.GeoJSON()
+            }),
+            name: 'factoryLayer',
+            style: function (f, res) {
+                var fillColor = 'rgba(0,0,0,0)';
+                var weight = parseInt(f.getProperties().weight);
+                var name = f.getProperties().name;
+                if (weight > 0 && weight < 3) {
+                    fillColor = '#0066ce';
+                } else if (weight >= 3 && weight < 5) {
+                    fillColor = '#f5e812';
+                } else if (weight >= 5 && weight < 7) {
+                    fillColor = '#ef7216';
+                } else if (weight >= 7) {
+                    fillColor = '#ea3131';
+                }
+
+                return new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: fillColor
+                    }),
+                    stroke: new ol.style.Stroke({
+                        width: '3',
+                        color: '#3F7FBF'
+                    }),
+                    text: new ol.style.Text({
+                        text: name,
+                        font: '16px 微软雅黑',
+                        fill: new ol.style.Fill({ color: '#0C1926' })
+                    })
+                })
+            }
+        });
+        companyLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+
+            }),
+            name: 'companyLayer'
+        });
+        map = new ol.Map({
+            target: 'mapRisk',
+            overlays: [overlay],
+            controls: ol.control.defaults({
+
+            }).extend([
+
+            ]),
+            logo: false,
+            // layers: [ckLayer],
+            layers: [googleMapLayer, googleRasterLayer, countyLayer, factoryLayer, cityLayer, companyLayer],
+            view: view
+        });
+        window.map = map;//将map变量存储在全局
+    }
+    //鼠标移动显示信息
+    function displayFeatureInfo(evt, type) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+            return feature;
+        }, {
+            layerFilter: function (ly) {
+                if (ly.getProperties().name == 'companyLayer') {
+                    return true;
+                } else {
+                    document.getElementById("mapRisk").style.cursor = 'default'
+                    return false;
+                }
+            }
+        });
+        if (feature) {
+            var featureHighlight = feature;
+            var TargetName = featureHighlight.getProperties().TargetName;
+            var title = featureHighlight.getProperties().title;
+            var gid = featureHighlight.getProperties().gid;
+            var AccidentName = featureHighlight.getProperties().AccidentName;
+            var IndustryName = featureHighlight.getProperties().IndustryName;
+            if (type == 'move') {
+                str = "<p style='font-size:14px;line-height:20px;color:#00a0e9;font-weight:bold;'>" + title + "</p><p style='font-size:14px;color:#333'>目标类别：" + TargetName + "</p><p style='font-size:14px;color:#333'>行业名称：" + IndustryName + "</p><p style='font-size:14px;color:#333'>事故类型：" + AccidentName + "</p>";
+                content.innerHTML = str;
+                overlay.setPosition(featureHighlight.getGeometry().getCoordinates());
+            } else if (type = 'click') {
+                if (clickName == "视频监控") {
+                    var url = "/RiskCamera/TestCamera?riskId=" + gid;
+                    //DialogWithSanClose(url, "RiskCamera", "视频监控", "100%", "100%");
+                    AddTab(gid, url, "视频监控", '/Content/Images/Icon16/folder_user.png', 'true', 'true', 'true');
+                }
+                else if (clickName == "在线监测") {
+                    var url = "/Main/Monitor?riskId=" + gid;
+                    DialogWithClose(url, "RiskCamera", "在线监测", "1000", "700");
+                }
+                    //弹出详情
+                else
+                    AddTab(gid, "/RiskUpdate/RiskDetail", TargetName, '/Content/Images/Icon16/folder_user.png', 'true', 'true');
+            }
+        } else {
+            document.getElementById("mapRisk").style.cursor = 'default'
+            content.innerHTML = '';
+            overlay.setPosition(undefined);
+        }
+    }
+
+    function OpenTabs(title) {
+        if (title == "大数据分析") {
+            var url = "/Main/StaticAnaly";
+            AddTabs('', url, title, '/Content/Images/Icon16/chart_stock.png', true, true, true)
+        }
+    }
+
+    //地图事件设置函数：
+    function setMapEvent() {
+        map.on('pointermove', function (evt) {
+            if (evt.dragging) {
+                return;
+            }
+            document.getElementById("mapRisk").style.cursor = 'pointer'
+            //document.getElementById("mapRisk").style.cursor = 'default'
+            displayFeatureInfo(evt, 'move');
+        });
+        map.on('singleclick', function (evt) {
+            if (evt.dragging) {
+                return;
+            }
+            displayFeatureInfo(evt, 'click');
+        })
+    };
+    //创建一个Icon
+    function createIcon(json) {
+        var ur = "";
+        if (json.title > 0) {
+            ur = "/Content/Images/red_small.png";
+        } else {
+            ur = "/Content/Images/green_small.png";
+        }
+        var icon = new BMap.Icon(ur, new BMap.Size(json.icon.w, json.icon.h), { imageOffset: new BMap.Size(-json.icon.l, -json.icon.t), infoWindowOffset: new BMap.Size(json.icon.lb + 5, 1), offset: new BMap.Size(json.icon.x, json.icon.h) })
+        return icon;
+    }
+
+    initMap();//创建和初始化地图
+
+    function GetQuyuByName() {
+        //alert(1);
+        $.ajax({
+            url: "/TargetType/GetQuYu",
+            type: "Get",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    //var a = data[i];
+                    var a = data[i].RegionLatlng;
+                    //var id = data[i].RegionID;
+                    //var name = data[i].Name;
+                    //var lat = data[i].NameLat;
+                    //var lng = data[i].NameLng;
+                    //var b = coordtransform.gcj02tobd09(lng, lat);
+                    //var point = new BMap.Point(b[0], b[1]);
+                    //var color = data[i].RegionLevle;
+
+                    canvisArea(a);
+                    canvisArea3(a);
+                    //AddMarker(point, id, name);
+
+                }
+
+            }
+        });
+    }
+    function GetQuyuByName2() {
+        //alert(1);
+        $.ajax({
+            url: "/TargetType/GetQuYu2",
+            type: "Get",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    //var a = data[i];
+                    var a = data[i].RegionLatlng;
+
+                    canvisArea2(a);
+                    //AddMarker(point, id, name);
+
+                }
+
+            }
+        });
+    }
+    function canvisArea(a) {
+        var pointArray = [];
+        var pointArr = coordtransform.transgeom(a);
+        var ply = new BMap.Polygon(pointArr, { strokeWeight: 2, strokeColor: "blue", strokeStyle: 'dashed', strokeOpacity: 1.0, fillColor: "none" }); //建立多边形覆盖物
+        map.addOverlay(ply);  //添加覆盖物
+        pointArray = pointArray.concat(ply.getPath());
+        // map.setViewport(pointArray);    //调整视野  
+    }
+    function canvisArea2(a) {
+        var pointArray = [];
+        var pointArr = coordtransform.transgeom(a);
+        var ply = new BMap.Polyline(pointArr, { strokeWeight: 2, strokeColor: "blue", strokeStyle: 'dashed', strokeOpacity: 1.0, fillColor: "none" }); //建立多边形覆盖物
+        map.addOverlay(ply);  //添加覆盖物
+        pointArray = pointArray.concat(ply.getPath());
+        // map.setViewport(pointArray);    //调整视野  
+    }
+
+    function canvisArea3(a) {
+        var pointArray = [];
+        var pointArr = coordtransform.transgeom(a);
+        var ply = new BMap.Polygon(pointArr, { strokeWeight: 8, strokeColor: "#e26ca6", strokeOpacity: 0.6, strokeStyle: 'solid', fillOpacity: 0.3, fillColor: "#fff100" }); //建立多边形覆盖物
+        //ply.setFillOpacity(0.1); 
+        map.addOverlay(ply);  //添加覆盖物
+
+        pointArray = pointArray.concat(ply.getPath());
+    }
+
+    function canvisArea4(a) {
+        var pointArray = [];
+        var pointArr = a;
+        var ply = new BMap.Polygon(pointArr, { strokeWeight: 2, strokeColor: "none", strokeStyle: 'dashed', fillOpacity: 0.7, fillColor: "#d6847c" }); //建立多边形覆盖物
+        //ply.setFillOpacity(0.1); 
+        map.addOverlay(ply);  //添加覆盖物
+
+        pointArray = pointArray.concat(ply.getPath());
+        //ply.setFillColor("#000");
+    }
+</script>
+
+<script type="text/javascript">
+    var countySource = 0;
+    $(function () {
+        GetMain();
+        //$(".four-list div.active").click();
+        GetHomeMark();
+
+        $(".four-list div").click(function () {
+            clickName = "";
+            //alert($(this).find("dt").text());
+            $(this).addClass("active").siblings().removeClass("active");
+            $(".left-bottom div").removeClass("active");
+
+            $.ajax({
+                url: "/Main/MapTargetData",
+                data: { "text": $(this).find("dt").text() },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    addMarker(data);
+
+                }
+            })
+        })
+        //切换四色图
+        $('#changeCounty').click(function () {
+            if (countySource === 0) {
+                $('#changeCounty').attr('src','../Content/Images/Search/guan.png');
+                countyLayer.setVisible(false);
+                factoryLayer.setVisible(false);
+                countySource = 1;
+            } else {
+                $('#changeCounty').attr('src','../Content/Images/Search/kai.png');
+                countySource = 0;
+                countyLayer.setVisible(true);
+                factoryLayer.setVisible(true);
+            }
+
+        });
+        $(".clear-btn").click(function () {
+            clickName = "";
+            $(".trade-list div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(".area-box div div").each(function () {
+                $(this).removeClass("active");
+            })
+            //initMap();
+            if (map) {
+                countyLayer.setVisible(false);
+                companyLayer.getSource().clear();
+                content.innerHTML = '';
+                overlay.setPosition(undefined);
+            }
+        })
+
+        $("#serchTxt").autocomplete('/Gs_Risk/GetName',
+              {
+                  httpMethod: "POST",
+                  minChars: 0,
+                  max: 100000,
+                  width: $("#serchTxt").width(),
+                  selectFirst: true,
+                  cacheLength: 1,
+                  scrollHeight: 400,
+                  parse: function (data) {
+                      if (data.length > 0) {
+
+                          if ($("#serchTxt").val().trim() != null && $("#serchTxt").val().trim() != "") {
+                              return $.map(eval(data), function (row) {
+                                  return {
+                                      data: row,
+                                      value: row.KeyWork, //此处无需把全部列列出来，只是两个关键列
+                                      result: row.KeyValue
+                                  }
+                              });
+                          }
+                          else {
+                              $(".ac_results").hide();
+                              $("#search_detatil").hide();
+                          }
+                      }
+                  },
+                  formatItem: function (row, i, max) {
+                      return "<div  id='" + row.KeyWork + "' class='detail_search'>" + row.KeyValue + "</div>";  //+ obj.city + "<br /> ";
+                  }
+              }).result(function (event, data, formatted) {
+                  $("#serchTxt").val(data.KeyValue);
+                  //GetDetail();
+                  GetPoint();
+              });
+
+        $(".right-list3").click(function () {
+            $(".trade-list div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(".area-box div div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(this).addClass("active").siblings().removeClass("active");
+            $(".four-list div").removeClass("active");
+            clickName = "视频监控";
+            GetQuYuCount();
+        })
+
+        $(".right-list2").click(function () {
+            $(".trade-list div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(".area-box div div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(this).addClass("active").siblings().removeClass("active");
+            $(".four-list div").removeClass("active");
+            clickName = "在线监测";
+            GetMonitorCount();
+        })
+
+        $(".trade-list div").click(function () {
+            clickName = "";
+            $(".area-box div div").each(function () {
+                $(this).removeClass("active");
+            })
+            if ($(this).hasClass("active"))
+                $(this).removeClass("active");
+            else
+                $(this).addClass("active");
+
+            var AccessoryJson = new Array();
+            $(".trade-list div.active").each(function () {
+                var Accessory = {
+                    Name: "行业风险",  //行业风险选择
+                    Static: $(this).find("span").text()
+                };
+                AccessoryJson.push(JSON.stringify(Accessory));
+            })
+
+            var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+
+            if (AccessoryJson.length > 0) {
+                var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+                $.ajax({
+                    url: "/Main/MapIndustryData",
+                    data: { "postData": postData },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        addMarker(data);
+                        $(".list-child").hide();
+                    }
+                })
+            }
+            else {
+                //initMap();
+                clearMap();
+                return false;
+            }
+        })
+
+        $(".area-box div").click(function () {
+            clickName = "";
+            $(".trade-list div").each(function () {
+                $(this).removeClass("active");
+            })
+            if ($(this).hasClass("active"))
+                $(this).removeClass("active");
+            else
+                $(this).addClass("active");
+
+            var AccessoryJson = new Array();
+            $(".area-box div div.active").each(function () {
+                var Accessory = {
+                    Name: "区域风险",  //行业风险选择
+                    Static: $(this).find("span").text()
+                };
+                AccessoryJson.push(JSON.stringify(Accessory));
+            })
+
+            var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+
+            if (AccessoryJson.length > 0) {
+                var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+                $.ajax({
+                    url: "/Main/MapIndustryData",
+                    data: { "postData": postData },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        addMarker(data);
+                        $(".list-child").hide();
+                    }
+                })
+            }
+            else {
+                //initMap();
+                clearMap();
+                return false;
+            }
+        })
+
+        $(".map-change-btn li").click(function () {
+            $(this).addClass("active").siblings().removeClass("active");
+            if ($(this).text() == "地图") {
+                googleMapLayer.setVisible(true);
+                googleRasterLayer.setVisible(false);
+            }
+            else {
+                googleMapLayer.setVisible(false);
+                googleRasterLayer.setVisible(true);
+            }
+        })
+
+        $(".right-list-child").click(function () {
+            $(this).addClass("active").siblings().removeClass("active");
+            $(".four-list div").removeClass("active");
+            clickName = "";
+            $(".trade-list div").each(function () {
+                $(this).removeClass("active");
+            })
+            $(".area-box div div").each(function () {
+                $(this).removeClass("active");
+            })
+
+            //yingjiattr = $(this).children("a").attr("attr");
+            //alert($(this).children("a").attr("attr"));
+            //alert(yingjiattr);
+            $.ajax({
+                url: "/Main/MapDataByQuyu",
+                //data: { "industryTypeId": $(this).children("a").attr("attr") },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    //alert(1);
+                    addMarkerEmergency(data);
+                }
+            })
+        })
+
+        $(".trade-class li").click(function () {
+            $(this).addClass("active").siblings().removeClass("active");
+            $.ajax({
+                url: "/Main/GetIndustryList",
+                type: "post",
+                data: { "text": $(this).text() },
+                dataType: "json",
+                success: function (data) {
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        if (i < 8) {
+                            html += "<div onclick='GetIndustryData(this)'><span>" + data[i].Name + "</span><strong>" + data[i].Count + "</strong></div>";
+                        }
+                    }
+                    $(".trade-list").empty();
+                    $(".trade-list").append(html);
+                }
+            })
+        })
+    })
+
+    function GetIndustryData(obj) {
+        clickName = "";
+        $(".area-box div div").each(function () {
+            $(this).removeClass("active");
+        })
+        if ($(obj).hasClass("active"))
+            $(obj).removeClass("active");
+        else
+            $(obj).addClass("active");
+
+        var AccessoryJson = new Array();
+        $(".trade-list div.active").each(function () {
+            var Accessory = {
+                Name: "行业风险",  //行业风险选择
+                Static: $(this).find("span").text()
+            };
+            AccessoryJson.push(JSON.stringify(Accessory));
+        })
+
+        var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+
+        if (AccessoryJson.length > 0) {
+            var postData = "{\"AccessoryJson\":[" + eval(AccessoryJson) + "]}";
+            $.ajax({
+                url: "/Main/MapIndustryData",
+                data: { "postData": postData },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    addMarker(data);
+                    $(".list-child").hide();
+                }
+            })
+        }
+        else {
+            //initMap();
+            clearMap();
+            return false;
+        }
+    }
+
+
+    function GetMain() {
+        $('#SafeNum').highcharts({
+            chart: {
+                type: 'gauge',
+                borderWidth: 0,
+                backgroundColor: 'rgba(0,0,0,0)',
+                plotBackgroundImage: null,
+                plotShadow: false,
+                plotBorderWidth: 0
+            },
+            credits: {
+                enabled: false
+            },
+            pane: {
+                startAngle: -150,
+                endAngle: 150,
+                center: ['50%', '50%'],
+                size: 130,
+                background: [{
+                    backgroundColor: null,
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: null,
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+            title: {
+                text: '风险值(市)',
+                align: 'left',
+                y: -20,
+                floating: true,
+                style: {
+                    fontSize: "16px",
+                    color: '#57AF4C',
+                    fontWeight: 'bold',
+                    fontFamily: '微软雅黑, 宋体, Arial, Helvetica, Verdana, sans-serif'
+                }
+            },
+            yAxis: {
+                min: 0,
+                max: 2000,
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                title: {
+                    text: '<br/><span style="font-size:18px">风险值</span>',
+                    style: {
+                        color: '@ViewData["currentColor"]',
+                        fontSize: '14px',
+                        fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                    }
+                },
+                tickPixelInterval: 50,
+                tickWidth: 2,
+                tickPosition: 'inside',
+
+                tickColor: '#666',
+                labels: {
+                    step: 1,
+                    rotation: 'auto',
+                    style: {
+                        color: '#000',
+                        font: '11px Trebuchet MS, Verdana, sans-serif',
+                        width: '60px'
+                    }
+                },
+                plotBands: [{
+                    from: 0,
+                    to: 150,
+                    color: '#0066cc' // green
+                }, {
+                    from: 150,
+                    to: 300,
+                    color: '#f4ea2a' // yellow
+                }, {
+                    from: 300,
+                    to: 1000,
+                    color: '#f4a12b' // red
+                }, {
+                    from: 1000,
+                    to: 2000,
+                    color: '#ff0b0b'
+                }]
+            },
+
+            series: [{
+                name: '安全指数',
+                data: [@ViewData["RiskData"]]
+
+            }]
+        });
+    }
+
+    function GetQuYuCount() {
+        $.ajax({
+            url: "/RiskCamera/MapDataByQuyu",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                //alert(1);
+                addMarkerCamera(data);
+            }
+        })
+    }
+
+    function GetMonitorCount() {
+        $.ajax({
+            url: "/Main/MapDataByMonitor",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                //alert(1);
+                addMarkerMonitor(data);
+            }
+        })
+    }
+
+    function GetHomeMark() {
+        //alert($(".four-list div").eq(0).find("dt").text());
+        clickName = "";
+        //alert($(this).find("dt").text());
+        $.ajax({
+            url: "/Main/MapTargetData",
+            data: { "text": $(".four-list div").eq(0).find("dt").text() },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                addMarker(data);
+
+            }
+        })
+    }
+
+    function GetPoint() {
+        $.ajax({
+            url: "/Main/GetMapPoint",
+            data: { "search": $("#serchTxt").val() },
+            type: "Post",
+            dataType: "json",
+            success: function (RDate) {
+                //$("#main ul.nav li ul li h3.selected").each(function () {
+                //    $(this).removeClass("selected");
+                //});
+                addMarker(RDate);
+            }
+        })
+    }
+
+    function backCenter() {
+        if (map) {
+            view.setZoom(zoom);
+            view.setCenter(center);
+        }
+    }
+
+    function addMarker(data) {
+        clearMap();
+        //initMap();
+        var count = 0;
+        var features = [];
+        for (var i = 0; i < data.length; i++) {
+            var str = "";
+            var json = data[i];
+            var p0 = json.lo;
+            var p1 = json.la;
+            var c = coordtransform.latLng2WebMercator(p0, p1);
+            var f = new ol.Feature({
+                geometry: new ol.geom.Point(c),
+                TargetName: data[i].TargetName,
+                title: data[i].title,
+                gid: data[i].id,
+                AccidentName: data[i].AccidentName,
+                IndustryName: data[i].IndustryName
+
+            });
+            var img = "";
+            img = GetImg(json.TargetName);
+            f.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "/Content/Images/" + img,
+                    crossOrigin: 'anonymous',
+                    size: [26, 26],
+                    anchor: [0.5, 0.5]
+                })
+            }));
+            features.push(f);
+        }
+        companyLayer.getSource().addFeatures(features);
+    }
+
+    function addMarkerEmergency(data) {
+        clearMap();
+        //initMap();
+        var count = 0;
+        var features = [];
+        for (var i = 0; i < data.length; i++) {
+            var str = "";
+            var json = data[i];
+            var p0 = json.lo;
+            var p1 = json.la;
+            var c = coordtransform.latLng2WebMercator(p0, p1);
+            var f = new ol.Feature({
+                geometry: new ol.geom.Point(c),
+                TargetName: data[i].TargetName,
+                title: data[i].title,
+                gid: data[i].id,
+                AccidentName: data[i].AccidentName,
+                IndustryName: data[i].IndustryName
+
+            });
+            var img = "";
+            img = GetEMERGENCYSOURCEImg(json.TargetName);
+            f.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "/Content/Images/" + img,
+                    crossOrigin: 'anonymous',
+                    size: [36, 48],
+                    anchor: [0.5, 0.5]
+                })
+            }));
+            features.push(f);
+        }
+        companyLayer.getSource().addFeatures(features);
+    }
+
+    function GetImg(title) {
+        if (title == "重大风险点") {
+            return "RiskPoints.png";
+        }
+        else if (title == "重大隐患") {
+            return "Hidden.png";
+        }
+        else if (title == "重大危险源") {
+            return "HazardSources.png";
+        }
+        else if (title == "脆弱性目标") {
+            return "TargetVulnerability.png";
+        }
+    }
+
+    function addMarkerCamera(data) {
+        clearMap();
+        //initMap();
+        var count = 0;
+        var features = [];
+        for (var i = 0; i < data.length; i++) {
+            var str = "";
+            var json = data[i];
+            var p0 = json.lo;
+            var p1 = json.la;
+            var c = coordtransform.latLng2WebMercator(p0, p1);
+            var f = new ol.Feature({
+                geometry: new ol.geom.Point(c),
+                TargetName: data[i].TargetName,
+                title: data[i].title,
+                gid: data[i].id,
+                AccidentName: data[i].AccidentName,
+                IndustryName: data[i].IndustryName
+
+            });
+            var img = "";
+            //img = GetEMERGENCYSOURCEImg(json.TargetName);
+            f.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "/Content/Images/icon-1.png",
+                    crossOrigin: 'anonymous',
+                    size: [33, 42],
+                    anchor: [0.5, 0.5]
+                })
+            }));
+            features.push(f);
+        }
+        companyLayer.getSource().addFeatures(features);
+    }
+
+    function addMarkerMonitor(data) {
+        clearMap();
+        //initMap();
+        var count = 0;
+        var features = [];
+        for (var i = 0; i < data.length; i++) {
+            var str = "";
+            var json = data[i];
+            var p0 = json.lo;
+            var p1 = json.la;
+            var c = coordtransform.latLng2WebMercator(p0, p1);
+            var f = new ol.Feature({
+                geometry: new ol.geom.Point(c),
+                TargetName: data[i].TargetName,
+                title: data[i].title,
+                gid: data[i].id,
+                AccidentName: data[i].AccidentName,
+                IndustryName: data[i].IndustryName
+
+            });
+            var img = "";
+            //img = GetEMERGENCYSOURCEImg(json.TargetName);
+            f.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "/Content/Images/icon1_1.png",
+                    crossOrigin: 'anonymous',
+                    size: [33, 42],
+                    anchor: [0.5, 0.5]
+                })
+            }));
+            features.push(f);
+        }
+        companyLayer.getSource().addFeatures(features);
+    }
+
+    function GetEMERGENCYSOURCEImg(title) {
+        if (title == "消防队") {
+            return "xiaofang.png";
+        }
+        else if (title == "避难场所") {
+            return "binan.png";
+        }
+        else if (title == "医疗救护") {
+            return "yiliao.png";
+        }
+        else if (title == "防洪设施") {
+            return "fanghong.png";
+        }
+    }
+
+    //清空企业和弹出
+    function clearMap() {
+        document.getElementById("mapRisk").style.cursor = 'default'
+        if (map) {
+            companyLayer.getSource().clear();
+            content.innerHTML = '';
+            overlay.setPosition(undefined);
+        }
+    }
+
+    //添加（宋）tab页
+    function AddTab(tabid, url, title, img, Isclose, IsReplace, isButton) {
+        if (parent.$('#tt').tabs("exists", "<span class='tt-inner'><img src='" + img + "'/>" + title + "</span>") && IsReplace) {
+            parent.$('#tt').tabs('select', "<span class='tt-inner'><img src='" + img + "'/>" + title + "</span>");
+        } else {
+
+            if (parent.$('.tabs').find("li").length >= 10) {
+                parent.$("#tt").tabs("close", 1);
+                //AlertDialog("为保证系统效率,只允许同时运行10个功能窗口,请关闭一些窗口后重试！");
+                // return false;
+            }
+            if (isButton) {
+                parent.$('#tt').tabs('add', {
+                    title: "<span class='tt-inner'><img src='" + img + "'/>" + title + "</span>",
+                    content: "<iframe id=\"tabs_iframe_" + tabid + "\" style='min-width:850px;display:block' name=\"tabs_iframe_" + tabid + "\" height='100%' width='100%' src=\"" + url + "\" frameBorder=\"0\" ></iframe>",
+                    closable: Isclose
+                });
+            } else {
+                parent.$('#tt').tabs('add', {
+                    title: "<span class='tt-inner'><img src='" + img + "'/>" + title + "</span>",
+                    content: "<iframe id=\"tabs_iframe_" + tabid + "\" style='min-width:850px;display:block' name=\"tabs_iframe_" + tabid + "\" height='100%' width='100%' src=\"" + url + "?id=" + tabid + "\" frameBorder=\"0\" ></iframe>",
+                    closable: Isclose
+                });
+            }
+
+        }
+    }
+</script>

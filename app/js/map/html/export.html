@@ -1,0 +1,58 @@
+<div class="layer-box">
+        <div class="layer-content">
+            <div class="company-form thematic-form thematic-export clearfix">
+                <div class="input-group">
+                    <label>专题图标题:</label>
+                    <input type="text" class="txt" value="" placeholder="" id="mapName">
+                </div>
+                <div class="input-group">
+                    <label>纸张选择:</label>
+                    <select id="paperType">
+                        <option value="a0">A0</option>
+                        <option value="a1">A1</option>
+                        <option value="a2">A2</option>
+                        <option value="a3">A3</option>
+                        <option value="a4" selected="selected">A4</option>
+                        <option value="selfSet">自定义</option>
+                    </select>
+                </div>
+                <div id="selfSetDiv" class="input-group" style="display: none;">
+                    <label style="width: 100%;font-size:12px;color:#f00; text-align: center;">提示：最小200,最大3000</label>
+                    <label>宽度:</label>
+                    <input class="txt" id="aWidth" min="200" max="3000" type="number" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                    <label class="">高度:</label>
+                    <input class="txt" id="aHeight" min="200" max="3000" type="number" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                    <div class="btn-group" style="display: table; width: auto; margin-left: auto; margin-right: auto;">
+                        <button type="button" class="mybtn btn-primary btn-sm" style="color: white;" id="selfEnsure">确定</button>
+                    </div>
+                </div>
+                <div class="input-group" style="display: none;">
+                    <label>清晰度选择:</label>
+                    <select id="resolution" style="margin-left: -5px;">
+                        <option value="100">普清</option>
+                        <option value="200">高清</option>
+                        <option value="300">超清(最慢)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>方向选择:</label>
+                    <select id="paperDir">
+                        <option value="1" selected="selected" >纵向</option>
+                        <option value="0" >横向</option>
+                    </select>
+                </div>
+                <div class="input-group" id="fileType">
+                    <label>文件格式选择:</label>
+                    <select>
+                        <option>.jpg</option>
+                        <option>.pdf</option>
+                    </select>
+                </div>
+                <div class="btn-box">
+                    <button type="button" class="mybtn red-btn" id="previewMap">预览</button>
+                    <button type="button" class="mybtn red-btn" disabled="disabled" style="background-color: #777;" id="cancelPreviewMap">取消预览</button>
+                    <button type="button" class="mybtn red-btn" id="exportMap">导出</button>
+                </div>
+            </div>
+        </div>
+    </div>
