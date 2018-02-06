@@ -1,0 +1,1 @@
+=LEFT(C2,FIND("¡ã",C2)-1)*1+MID(C2,FIND("¡ã",C2)+1,2)/60+MID(C2,FIND("¡ä",C2)+1,LEN(C2)-FIND("¡ä",C2)-1)/3600
