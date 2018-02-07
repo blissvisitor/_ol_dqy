@@ -1,0 +1,56 @@
+<sld:FeatureTypeStyle> 
+        <sld:Name>热力图</sld:Name>  
+        <sld:Transformation> 
+          <ogc:Function name="gs:Heatmap"> 
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>data</ogc:Literal> 
+            </ogc:Function>  
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>radiusPixels</ogc:Literal>  
+              <ogc:Function name="env"> 
+                <ogc:Literal>radius</ogc:Literal>  
+                <ogc:Literal>40</ogc:Literal> 
+              </ogc:Function> 
+            </ogc:Function>  
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>pixelsPerCell</ogc:Literal>  
+              <ogc:Literal>2</ogc:Literal> 
+            </ogc:Function>  
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>outputBBOX</ogc:Literal>  
+              <ogc:Function name="env"> 
+                <ogc:Literal>wms_bbox</ogc:Literal> 
+              </ogc:Function> 
+            </ogc:Function>  
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>outputWidth</ogc:Literal>  
+              <ogc:Function name="env"> 
+                <ogc:Literal>wms_width</ogc:Literal> 
+              </ogc:Function> 
+            </ogc:Function>  
+            <ogc:Function name="parameter"> 
+              <ogc:Literal>outputHeight</ogc:Literal>  
+              <ogc:Function name="env"> 
+                <ogc:Literal>wms_height</ogc:Literal> 
+              </ogc:Function> 
+            </ogc:Function> 
+          </ogc:Function> 
+        </sld:Transformation>  
+        <sld:Rule> 
+          <sld:Name>色带</sld:Name>  
+          <sld:MinScaleDenominator>150000</sld:MinScaleDenominator>  
+          <sld:RasterSymbolizer> 
+            <sld:Geometry> 
+              <ogc:PropertyName>geom</ogc:PropertyName> 
+            </sld:Geometry>  
+            <sld:Opacity>0.6</sld:Opacity>  
+            <sld:ColorMap type="ramp"> 
+              <sld:ColorMapEntry color="#0000FF" quantity="0" label="nodata" opacity="0"/>  
+              <sld:ColorMapEntry color="#00FFFF" quantity="0.02" label="nodata" opacity="0"/>  
+              <sld:ColorMapEntry color="#00FF00" quantity=".1" label="nodata"/>  
+              <sld:ColorMapEntry color="#FFFF00" quantity=".5" label="values"/>  
+              <sld:ColorMapEntry color="#FF0000" quantity="1.0" label="values"/> 
+            </sld:ColorMap> 
+          </sld:RasterSymbolizer> 
+        </sld:Rule> 
+      </sld:FeatureTypeStyle>  

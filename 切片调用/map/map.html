@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>调用切片</title>
+    <link rel="stylesheet" href="./ol/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+     <script src="./ol/ol.js"></script>
+    <style>
+      html,body{ margin:0px; height:100%;}
+	  .container { height: 100%;}
+	  .c2{ width:100%; }
+</style>
+    </style>
+  </head>
+  <body>
+    <div id="map" class="container c2" tabindex="0" style="height:100%;"></div>
+    <script>
+	var url = "http://10.0.0.4:8014/_alllayers";
+	var view, map;
+
+    var tileLayer = new ol.layer.Tile({
+		source: new ol.source.XYZ ({
+			tileUrlFunction: function(tileCoord) {
+				var x = 'C'+zeroPad(tileCoord[1],8,16);
+				var y = 'R'+zeroPad(-tileCoord[2],8,16);
+				var z = 'L'+zeroPad(tileCoord[0],2,10);
+				return url+'/'+z+'/'+y+'/'+x+'.png';
+			},
+			projection: 'EPSG:3857'
+		})
+	});
+    view = new ol.View({
+        center: [0, 0],
+        zoom: 2,
+        minZoom: 1,
+        maxZoom: 12,
+        projection: 'EPSG:3857'
+    }); 
+
+    map = new ol.Map({
+        controls:ol.control.defaults({
+            zoom:false,rotate:false
+        }),
+        interactions: ol.interaction.defaults({ doubleClickZoom: false }),
+        layers: [tileLayer],
+        target: "map",
+        logo: false,
+        view: view
+    });
+	
+	function zeroPad(num,len,radix){
+		var str = num.toString(radix || 10);
+		while(str.length<len){
+			str = "0"+ str;
+		}
+		return str;
+	}
+    </script>
+  </body>
+</html>
