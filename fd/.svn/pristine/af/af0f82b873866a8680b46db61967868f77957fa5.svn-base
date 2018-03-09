@@ -1,0 +1,289 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Share/_Layout.cshtml";
+}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <script src="js/bootstrap/js/jquery-3.0.0.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/common.js"></script>
+
+    <link href="~/Content/js/openlayers/ol.css" rel="stylesheet" />
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="~/Content/js/openlayers/ol.js"></script>
+</head>
+<body>
+    <header class="navbar-fixed-top">
+        <div class="header">
+            大兴区北臧村镇墓地迁移管理系统
+        </div>
+    </header>
+    <div class="container-fuild main-box">
+        <div class="project-box Dbg">
+            <div class="project-left">
+                <div class="table-select">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" placeholder="坟地编号" id="fdno" />
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" placeholder="村庄名称" id="villname" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" placeholder="死者名称" id="szname" />
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-control" id="szsex">
+                                <option value="">请选择</option>
+                                <option value="0">男</option>
+                                <option value="1">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input class="form-control Wdate" id="swstarttime" onfocus="WdatePicker({ dateFmt: 'yyyy/MM/dd', maxDate: '#F{$dp.$D(\'swendtime\')}', onpicked: function () { }, oncleared: function () { } })" type="text" placeholder="死亡起始日期" />
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control Wdate" type="text" id="swendtime" onfocus="WdatePicker({ dateFmt: 'yyyy/MM/dd', minDate: '#F{$dp.$D(\'swstarttime\')}', onpicked: function () { }, oncleared: function () { } })" placeholder="死亡结束日期" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" placeholder="家属姓名" id="jsname" />
+                        </div>
+                        <div class="col-md-6 btn-box">
+                            <button type="button" class="mybtn" onclick="Search()">查询</button>
+                            <button type="button" class="mybtn" onclick="Statics()">统计</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-box">
+                    <table class="table table-hover" id="gridList">
+                        @*  <tr>
+                            <th>行号</th>
+                            <th>坟地编号</th>
+                            <th>死者姓名</th>
+                            <th>死亡时间</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>234567</td>
+                            <td>李李李</td>
+                            <td>
+                                <span class="table-icon see" title="搜索"></span>
+                                <span class="table-icon del" title="删除"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>项目一</td>
+                            <td>在线</td>
+                            <td>
+                                <span class="table-icon see" title="搜索"></span>
+                                <span class="table-icon del" title="删除"></span>
+                            </td>
+                        </tr>*@
+                    </table>
+                </div>
+            </div>
+            <div class="project-right map-box">
+                @*<div class="map-btn">
+                    <button type="button" class="mybtn">保存</button>
+                </div>*@
+                <div id="map" class="map">
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        版权所有
+    </footer>
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+        GetDataGrid();
+    })
+    //统计
+    function Statics() {
+        layer.open({
+            type: 2,
+            title: " ",
+            shade: 0.6,
+            area: ['700px', '500px'],
+            border: [0, 0, false],
+            closeBtn: 2,
+            shadeClose: true,
+            skin: 'yourclass',
+            content: '/Home/Statics?fdno=' + $("#fdno").val() + '&villname=' + $("#villname").val() + '&szname=' + $("#szname").val() + '&szsex=' + $("#szsex").val() + '&swstarttime=' + $("#swstarttime").val() + '&swendtime=' + $("#swendtime").val() + '&jsname=' + $("#jsname").val()
+        });
+    }
+    //查询
+    function Search() {
+        $("#gridList").bootstrapTable('destroy');
+        GetDataGrid();
+    }
+    //卷宗编号
+    function GetDataGrid() {
+        var columns = [
+                { field: 'FDID', width: 100, visible: false, title: '坟地编号' },
+                { field: 'Index', width: 50, align: 'center', title: '序号' },
+                { field: 'FDNO', width: 50, align: 'center', title: '坟地编号' },
+                { field: 'SZNAME', width: 100, align: 'center', title: '死者姓名' },
+                { field: 'GEOM', width: 100, align: 'center', visible: false, title: 'geom' },
+                {
+                    field: 'SZSEX', width: 100, title: '死者性别', formatter: function (value, rec) {
+                        if (rec.SZSEX == "1") {
+                            return "女";
+                        } else {
+                            return "男";
+                        }
+                    }
+                },
+                { field: 'SWDATE', width: 100, align: 'center', title: '死亡时间', formatter: $.timePro },
+
+                {
+                    field: 'opt', title: '操作', width: 100, align: 'center',
+                    formatter: function (value, rec) {
+                        var btn = "<a class='table-icon see'   href='javascript:void(0)'  onclick='editItem(\"" + rec.FDID + "\")'></a><a   href='javascript:void(0)' class='table-icon del' onclick='DelItem(\"" + rec.FDID + "\")' style='margin-left:5px;'></a>";
+                        return btn;
+                    }
+                }
+        ];
+        $('#gridList').customDataGrid({
+            url: "/Home/GetFdInfo",
+            Params: ["fdno", "villname", "szname", "szsex", "swstarttime", "swendtime", "jsname"],
+            height: $(window).height() - 300,
+            //sortName: 'corpname',
+            //sortOrder: 'asc',
+            columns: columns,
+            onDblClickRow: function (item, $element) {
+                rowNow();
+                // editItem(item.CASEID);
+            },
+            onClickRow: function (item, $element) {          
+                rowNow()
+                var geom = item.GEOM;
+                if (geom) {
+                    locateToMap(geom);
+                }
+            }
+        });
+    }
+    function rowNow() {
+        $('table tr').click(function () {
+            $(this).addClass('active').siblings().removeClass('active');
+        })
+    }
+    //定位
+    function locateToMap(geom) {
+        locateLayer.getSource().clear();       
+        var geom = wktFormat.readGeometry(geom);
+        var feature = new ol.Feature({
+            geometry:geom
+        });
+        locateLayer.getSource().addFeature(feature);
+        view.fit(geom, map.getSize());
+        view.setZoom(20);
+    }
+</script>
+
+<script type="text/javascript">
+    var ip = "61.149.252.190:8080";
+    var geoserverUrl = "http://" + ip + "/geoserver/dx/wms";
+    var view, map, graveyardLayer, fdLayer,drawLayer,locateLayer, drawSource;
+    var wktFormat = new ol.format.WKT();
+    graveyardLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+            crossOrigin: 'anonymous',
+            ratio: 1,
+            url: geoserverUrl,
+            params: {
+                'FORMAT': "image/png",
+                'VERSION': '1.1.1',
+                STYLES: '',
+                //LAYERS: 'hb:nuclear',
+                LAYERS: 'dx:beizangcun',
+            }
+        }),
+        logo:false
+    });
+    fdLayer = new ol.layer.Image({
+        source: new ol.source.ImageWMS({
+            crossOrigin: 'anonymous',
+            ratio: 1,
+            url: geoserverUrl,
+            params: {
+                'FORMAT': "image/png",
+                'VERSION': '1.1.1',
+                STYLES: '',
+                //LAYERS: 'hb:nuclear',
+                LAYERS: 'dx:tbfdinfo',
+            }
+        })
+    });
+    drawSource = new ol.source.Vector({
+        crossOrigin: 'anonymous'
+    });
+
+    drawLayer = new ol.layer.Vector({
+        source: drawSource
+    });
+    locateLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            crossOrigin: 'anonymous'
+        }),
+        style: function () {
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "/Content/images/locate.png",
+                    crossOrigin: 'anonymous',
+                    size: [24, 24],
+                    anchor: [0.5, 1]
+                })
+            })
+        }
+    });
+    view = new ol.View({
+        center: [116.2664765930176, 39.67553390502931],
+        zoom: 13,
+        minZoom: 13,
+        //maxZoom: ,
+        projection: 'EPSG:4326',
+        extent: [116.20539682779089, 39.63050515780907, 116.32470082779089, 39.71839615780907]
+    });
+
+    map = new ol.Map({
+        controls: ol.control.defaults({
+            //zoom: false,
+            //rotate: false
+        }),
+        layers: [graveyardLayer, fdLayer, locateLayer, drawLayer],
+        target: "map",
+        logo: false,
+        view: view
+    });
+
+    var draw;
+    function addInteraction() {
+        draw = new ol.interaction.Draw({
+            source: drawSource,
+            type: "Polygon"
+        });
+        map.addInteraction(draw);
+    }
+
+    //addInteraction();
+</script>

@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Statics";
+    Layout = "~/Views/Share/_Layout.cshtml";
+}
+
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>行业监管</title>
+
+</head>
+<body>
+    <div style="height:30px; line-height:30px;">
+        <ul>
+            <li style="vertical-align:middle" onclick="Chart('0')"><input type="radio" name="=rdo" value="0" style="height:20px;  width:20px; vertical-align:middle" checked="checked" /><span style="vertical-align:middle">村庄</span></li>
+            @*<li style="vertical-align:middle"  onclick="Chart('1')"><input type="radio" name="=rdo" value="1" style="height:20px;  width:20px; vertical-align:middle" /><span style="vertical-align:middle">性别</span></li>*@
+            <li style="vertical-align:middle"  onclick="Chart('2')"><input type="radio" name="=rdo" value="2" style="height:20px;  width:20px; vertical-align:middle" /><span style="vertical-align:middle">迁坟意向</span></li>
+            <li style="vertical-align:middle" onclick="Chart('3')"><input type="radio" name="=rdo" value="2" style="height:20px;  width:20px; vertical-align:middle" /><span style="vertical-align:middle">是否火化</span></li>
+        </ul>
+    </div>
+    <div id="chartColumn" style="height: 360px;  margin-top:20px;">
+    </div>
+</body>
+</html>
+<script src="~/Content/js/highcharts/code/highcharts.js"></script> 
+<script src="~/Content/js/highcharts/code/modules/exporting.js"></script>
+<script src="~/Content/js/highcharts/highcharts-zh_CN.js"></script>
+<link href="~/Content/js/highcharts/code/css/highcharts.css" rel="stylesheet" />
+<style>
+    ul li {
+        float: left;
+        margin-left: 10px;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        Chart("0");
+    })
+    function Chart(t) {
+        $.post("/Home/GetChart", { type: t, fdno: $.request("fdno"), szsex: $.request("szsex"), jsname: $.request("jsname") }, function (msg) {
+            if (msg != "") {
+                var data = eval('(' + msg.split('/')[0] + ')');
+                ChartColumn(data, eval('(' + msg.split('/')[1] + ')'),t);
+            }
+        })
+    }
+    //图标柱状图
+    function ChartColumn(data, xaxis, t) {
+        var title = "";
+        if (t=="0") {
+            title = "村庄";
+        } else if (t == "2") {
+            title = "迁坟意向";
+        } else {
+            title = "是否火化";
+        }
+        var max = 0;
+        $('#chartColumn').highcharts({
+            chart: {
+                type: 'column',
+                options3d: {
+                    enabled: true,
+                    alpha: 10,
+                    beta: 25,
+                    depth: 70
+                }
+            },
+            tooltip: {
+                pointFormat: '{point.y}'
+            },
+            exporting:
+{
+
+    enabled:true,//默认为可用，当设置为false时，图表的打印及导出功能失效
+
+
+    filename: title,//导出的文件名
+    width: 1200   //导出的文件宽度
+
+},
+            xAxis: {
+                categories: xaxis,
+                labels: {
+                    x: -12,
+                    align: 'left',
+                    rotation: 0,
+
+                    style: {
+                        fontSize: '13px'
+                    },
+                    formatter: function (value) {
+                        var html = "";
+                        for (var i = 0; i < Math.round(this.value.length / 2) ; i++) {
+                            if (Math.round(this.value.length / 2) - 1 == i) {
+
+                                html += "<span>" + this.value.substr(i * 2, this.value.length - i * 2) + "</span>";
+                            } else {
+                                html += "<span>" + this.value.substr(i * 2, 2) + "</span><br/>";
+                            }
+                        }
+                        return html;
+                    }
+                }
+            },
+            title: {
+                text: ''
+            },
+            legend: {
+                enabled: false
+            },
+            yAxis: {
+                title: {
+                    text: null
+                },
+                labels: {
+                    // x: -30,
+                    style: {
+                        color: 'black',
+                        fontSize: '13px',
+                        fontFamily: '微软雅黑'
+                    },
+                    formatter: function () {
+                        return '<span>' + this.value + '</span><br>';
+
+                    }
+                }
+            },
+            plotOptions: {
+                column: {
+                    depth: 25,
+                    allowPointSelect: false,
+                    cursor: 'pointer',
+                    colorByPoint: true,
+                    dataLabels: {
+                        y: 8,
+                        align: 'center',
+                        enabled: true,
+                        style: {
+                            color: 'black',
+                            fontSize: '13px',
+                            fontFamily: '微软雅黑'
+                        },
+                        formatter: function () {
+                            max = this.series.yAxis.max;
+                            return '<span>' + this.point.y + '</span><br>';
+
+                        }
+
+                    },
+                    events: {
+                        click: function (e) {
+                        }
+                    }
+                },
+                series: {
+                    animation: false
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: data
+
+
+        });
+    }
+</script>

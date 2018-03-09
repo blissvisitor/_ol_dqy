@@ -1,0 +1,275 @@
+﻿using DXFDXT.Common;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace DXFDXT.Controllers
+{
+    public class HomeController : Controller
+    {
+        //
+        // GET: /Home/
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 获取坟地信息列表
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="fdno">坟地编号</param>
+        /// <param name="villname">村庄名称</param>
+        /// <param name="szname">死者名称</param>
+        /// <param name="szsex">死者性别</param>
+        /// <param name="swstarttime">死亡时间</param>
+        /// <param name="swendtime"></param>
+        /// <param name="jsname">家属名称</param>
+        /// <returns></returns>
+        public ActionResult GetFdInfo(Pagination pagination, string fdno, string villname, string szname, string szsex, string swstarttime, string swendtime, string jsname)
+        {
+            string condition = "1=1";
+            if (!string.IsNullOrEmpty(fdno))
+            {
+                condition += " and fdno like '%" + fdno + "%' ";
+            }
+            if (!string.IsNullOrEmpty(villname))
+            {
+                condition += " and villname like '%" + villname + "%'";
+            }
+            if (!string.IsNullOrEmpty(szname))
+            {
+                condition += " and szname like '%" + szname + "%' ";
+            }
+            if (!string.IsNullOrEmpty(szsex))
+            {
+                condition += " and szsex=" + szsex + " ";
+            }
+            if (!string.IsNullOrEmpty(swstarttime))
+            {
+                condition += " and swdate>='" + swstarttime + "' ";
+            }
+            if (!string.IsNullOrEmpty(swendtime))
+            {
+                condition += " and swdate<='" + swendtime + "' ";
+            }
+            if (!string.IsNullOrEmpty(jsname))
+            {
+                condition += " and jsname like '%" + jsname + "%' ";
+            }
+
+            int startRecord = (pagination.page * pagination.rows) + 1;
+            int endRecord = (pagination.page + 1) * pagination.rows;
+            DataTable dt = new BLL.TBFDINFO().GetListByPage(condition, "", startRecord, endRecord).Tables[0];
+            List<Model.TBFDINFO> lst = new List<Model.TBFDINFO>();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                int index = startRecord;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Model.TBFDINFO model = new Model.TBFDINFO();
+                    model.Index = index;
+                    model.FDID = dr["FDID"].ToString();
+                    model.FDNO = dr["FDNO"].ToString();
+                    model.SZNAME = dr["SZNAME"].ToString();
+                    if (dr["SZSEX"].ToString() != "")
+                    {
+                        model.SZSEX = int.Parse(dr["SZSEX"].ToString());
+                    }
+                    if (dr["SWDATE"].ToString() != "")
+                    {
+                        model.SWDATE = DateTime.Parse(dr["SWDATE"].ToString());
+                    }
+                    if (dr["GEOM"].ToString() != "")
+                    {
+                        model.GEOM = dr["GEOM"].ToString();
+                    }
+                    lst.Add(model);
+                    index++;
+                }
+            }
+            int totalCount = new BLL.TBFDINFO().GetRecordCount(condition);
+            return Json(new { rows = lst, total = totalCount });
+        }
+        /// <summary>
+        /// 统计
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Statics()
+        {
+
+            return View();
+        }
+        /// <summary>
+        /// 获取图表
+        /// </summary>
+        /// <param name="fdno"></param>
+        /// <param name="villname"></param>
+        /// <param name="szname"></param>
+        /// <param name="szsex"></param>
+        /// <param name="swstarttime"></param>
+        /// <param name="swendtime"></param>
+        /// <param name="jsname"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ActionResult GetChart(string fdno, string villname, string szname, string szsex, string swstarttime, string swendtime, string jsname, string type)
+        {
+            string condition = "1=1";
+            if (!string.IsNullOrEmpty(fdno))
+            {
+                condition += " and fdno like '%" + fdno + "%' ";
+            }
+            if (!string.IsNullOrEmpty(villname))
+            {
+                condition += " and villname like '%" + villname + "%'";
+            }
+            if (!string.IsNullOrEmpty(szname))
+            {
+                condition += " and szname like '%" + szname + "%' ";
+            }
+            if (!string.IsNullOrEmpty(szsex))
+            {
+                condition += " and szsex=" + szsex + " ";
+            }
+            if (!string.IsNullOrEmpty(swstarttime))
+            {
+                condition += " and swdate>='" + swstarttime + "' ";
+            }
+            if (!string.IsNullOrEmpty(swendtime))
+            {
+                condition += " and swdate<='" + swendtime + "' ";
+            }
+            if (!string.IsNullOrEmpty(jsname))
+            {
+                condition += " and jsname like '%" + jsname + "%' ";
+            }
+            //村庄
+            if (type == "0")
+            {
+                DataTable dt = new BLL.TBFDINFO().GetChart(condition, "villname").Tables[0];
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{data:[";
+                    xaxis += "[";
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        int count = int.Parse(dr["count"].ToString() == "" ? "0" : dr["count"].ToString());
+                        if (count > 0)
+                        {
+                            series += count + ",";
+                            string name = dr["name"].ToString() == "" ? "未知" : dr["name"].ToString();
+                            xaxis += "'" + name + "'" + ",";
+                        }
+
+                    }
+                    series = series.Substring(0, series.Length - 1);
+                    series += "]}]";
+                    xaxis = xaxis.Substring(0, xaxis.Length - 1);
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+                else
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{name:'',data:[";
+                    xaxis += "[";
+                    series += "]}]";
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+            }
+            else if (type == "1")
+            {
+                //性别
+                DataTable dt = new BLL.TBFDINFO().GetChart(condition, "szsex").Tables[0];
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{data:[";
+                    xaxis += "[";
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        int count = int.Parse(dr["count"].ToString() == "" ? "0" : dr["count"].ToString());
+                        if (count > 0)
+                        {
+                            string name = "男";
+                            if (dr["name"].ToString() == "1")
+                            {
+                                name = "女";
+                            }
+                            series += count + ",";
+                            xaxis += "'" + name + "'" + ",";
+                        }
+
+                    }
+                    series = series.Substring(0, series.Length - 1);
+                    series += "]}]";
+                    xaxis = xaxis.Substring(0, xaxis.Length - 1);
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+                else
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{name:'',data:[";
+                    xaxis += "[";
+                    series += "]}]";
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+            }
+            else if (type == "2")
+            {
+                //迁坟意向
+
+                DataTable dt = new BLL.TBFDINFO().GetChart(condition, "qfyx").Tables[0];
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{data:[";
+                    xaxis += "[";
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        int count = int.Parse(dr["count"].ToString() == "" ? "0" : dr["count"].ToString());
+                        if (count > 0)
+                        {
+                            string name = "放弃";
+                            if (dr["name"].ToString() == "1")
+                            {
+                                name = "迁坟";
+                            }
+                            series += count + ",";
+                            xaxis += "'" + name + "'" + ",";
+                        }
+
+                    }
+                    series = series.Substring(0, series.Length - 1);
+                    series += "]}]";
+                    xaxis = xaxis.Substring(0, xaxis.Length - 1);
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+                else
+                {
+                    string xaxis = string.Empty;
+                    string series = string.Empty;
+                    series += "[{name:'',data:[";
+                    xaxis += "[";
+                    series += "]}]";
+                    xaxis += "]";
+                    return Content(series + "/" + xaxis);
+                }
+            }
+            return Content("");
+        }
+    }
+}

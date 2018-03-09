@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>首页</title>
+	<link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/index.css">
+
+    <script src="js/bootstrap/js/jquery-3.0.0.min.js"></script>
+	<script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/common.js"></script>
+</head>
+<body>
+	<header class="navbar-fixed-top">
+		<div class="header">
+			大兴区北塘村镇墓地迁移管理系统
+		</div>
+	</header>
+	<div class="container-fuild main-box">
+		<div class="project-box Dbg">
+			<div class="project-left">
+				<div class="table-select">
+					<div class="form-group">
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="坟地编号" />
+						</div>
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="村庄名称" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="死者名称" />
+						</div>
+						<div class="col-md-6">
+							<select class="form-control">
+								<option>男</option>
+								<option>女</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="死亡起始日期" />
+						</div>
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="死亡结束日期" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-6">
+							<input class="form-control"type="text" placeholder="家属姓名" />
+						</div>
+						<div class="col-md-6 btn-box">
+							<button type="button" class="mybtn">查询</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-box">
+					<table class="table table-hover">
+						<tr>
+							<th>行号</th>
+							<th>坟地编号</th>
+							<th>死者姓名</th>
+							<th>死亡时间</th>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>234567</td>
+							<td>李李李</td>
+							<td>
+								<span class="table-icon see" title="搜索"></span>
+								<span class="table-icon del" title="删除"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>项目一</td>
+							<td>在线</td>
+							<td>
+								<span class="table-icon see" title="搜索"></span>
+								<span class="table-icon del" title="删除"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="project-right map-box">
+				<div class="map-btn">
+					<button type="button" class="mybtn">保存</button>
+				</div>
+				<div class="map">
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer class="footer">
+		版权所有
+	</footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="../../jquery-easyui-1.4.2/jquery.min.js"></script>
+    <script src="WdatePicker.js"></script>
+    <script>
+        $(function () {
+            $("#d11").click(function () {
+                WdatePicker();
+            });
+
+
+            $("#d12").click(function () {
+                WdatePicker({ isShowWeek: true, onpicked: function () { $dp.$('d121').value = $dp.cal.getP('W', 'W'); $dp.$('d121').value = $dp.cal.getP('W', 'WW'); } });
+            });
+            WdatePicker({ eCont: 'div1', onpicked: function (dp) { alert('你选择的日期是:' + dp.cal.getDateStr()) } })
+            $("#d13").click(function () {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: '#F{$dp.$D(\'d14\')}' });
+            });
+            $("#d14").click(function () {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '#F{$dp.$D(\'d13\')}' });
+            });
+
+        });
+    </script>
+</head>
+<body>
+    普通时间
+    <input id="d11" type="text" class="Wdate" value="2011-1-1" />
+    <br />
+    周时间
+    <input id="d12" type="text" class="Wdate" /><input id="d121" type="text" />
+    <br />
+    平面显示
+    <div id="div1"></div>
+    <br />
+    时间段选择
+    <input id="d13" type="text" class="Wdate" />
+    <input id="d14" type="text" class="Wdate" />
+    <br />
+    格式
+    <input type="text" id="d15" onfocus="WdatePicker({dateFmt:'yyyy年MM月dd日 HH时mm分ss秒'})" class="Wdate" style="width: 300px" />
+    <input type="text" id="d16" onfocus="WdatePicker({dateFmt:'yyyy'})" class="Wdate" />
+    <input type="text" id="Text1" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" />
+    <br />
+    双日历
+    <input class="Wdate" type="text" onfocus="WdatePicker({doubleCalendar:true,dateFmt:'yyyy-MM-dd'})" />
+    <br />
+    焕肤
+    <input class="Wdate" type="text" onfocus="WdatePicker({skin:'whyGreen'})" />
+    <br />
+    高亮
+    <input id="d471" type="text" class="Wdate" onfocus="WdatePicker({specialDays:[1,5]})" />
+    <input id="Text2" type="text" class="Wdate" onfocus="WdatePicker({specialDays:['2014-08-25']})" />
+</body>
+</html>

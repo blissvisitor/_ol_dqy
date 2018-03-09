@@ -1,0 +1,196 @@
+﻿@{
+    ViewBag.Title = "EditFd";
+    Layout = "~/Views/Share/_Layout.cshtml";
+}
+@using DXFDXT.Model
+<style>
+    table tr {
+        margin-top: 5px;
+        height: 25px;
+        line-height: 25px;
+    }
+
+        table tr td {
+            height: 25px;
+            line-height: 25px;
+        }
+
+    .td1 {
+        text-align: right;
+        margin-left: 10px;
+    }
+
+    .td2 {
+        text-align: center;
+    }
+</style>
+<form id="form">
+    <table style="text-align:center; margin-left:20px;">
+        <tr>
+            <td class="td1">坟地编号：</td>
+            <td class="td2"> 
+                <input type="text" value="@Model.FDNO" name="FDNO" style="height:30px; line-height:30px; width:240px; margin-top:5px;" />
+            </td>
+            <td class="td1">&nbsp;&nbsp;死者名称：</td>
+            <td class="td2">
+                <input type="hidden" id="FDMANID" value="@Model.FDMANID" name="FDMANID" />
+                <input type="text" value="@Model.SZNAME" name="SZNAME" style="height:30px; line-height:30px; width:240px;margin-top:5px;" />
+            </td>
+        </tr> 
+        <tr>
+            <td class="td1">死者性别：</td>
+            <td class="td2">
+                <input type="hidden" id="SZSEX" name="SZSEX" value="@Model.SZSEX" />
+                <input type="radio" value="0" name="btn" style="height:20px; line-height:20px; margin-left:10px; width:20px; vertical-align:middle; margin-bottom:5px;" />&nbsp;&nbsp;&nbsp;&nbsp;男<input type="radio" value="1" name="btn" style="width:20px;height:20px; vertical-align:middle;line-height:20px; margin-left:10px; margin-bottom:5px;" />&nbsp;&nbsp;&nbsp;&nbsp;女
+            </td>
+            <td class="td1">&nbsp;&nbsp;是否火化：</td>
+            <td class="td2">
+                <input type="hidden" id="ISFIRE" name="ISFIRE" value="@Model.ISFIRE" />
+                <input type="radio" value="0" name="btnFire" style="height:20px; line-height:20px; margin-left:10px; width:20px; vertical-align:middle" />&nbsp;&nbsp;&nbsp;&nbsp;否<input type="radio" value="1" name="btnFire" style="width:20px;height:20px; vertical-align:middle;line-height:20px; margin-left:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;是
+            </td>
+        </tr>
+        <tr>
+            <td class="td1">死亡时间：</td>
+            <td class="td2">
+                <input class="form-control Wdate" name="SWDATE" id="SWDATE" onfocus="WdatePicker({ dateFmt: 'yyyy/MM/dd',onpicked: function () { }, oncleared: function () { } })" type="text" placeholder="死亡时间" />
+            </td>
+            <td class="td1">&nbsp;&nbsp;迁坟意向：</td>
+            <td class="td2">
+                <input type="hidden" id="QFYX" name="QFYX" value="@Model.QFYX" />
+                <input type="radio" value="0" name="btnQfyx" style="height:20px; line-height:20px; margin-left:10px; width:20px; vertical-align:middle" />放弃<input type="radio" value="1" name="btnQfyx" style="width:20px;height:20px; vertical-align:middle;line-height:20px; margin-left:10px;" />迁坟
+            </td>
+        </tr>
+        <tr>
+            <td class="td1">家属姓名：</td>
+            <td class="td2">
+                <input type="text" value="@Model.JSNAME" name="JSNAME" style="height:30px; line-height:30px; width:240px;margin-top:5px;" />
+            </td>
+            <td class="td1">&nbsp;&nbsp;家属电话：</td>
+            <td class="td2">
+                <input type="text" value="@Model.JSPHONE" name="JSPHONE" style="height:30px; line-height:30px; width:240px;margin-top:5px;" />
+            </td>
+        </tr>
+        <tr>
+            <td class="td1">村庄名称：</td>
+            <td class="td2">
+                <input type="hidden" id="FDID" value="@Model.FDID" name="FDID" />
+                <input type="text" value="@Model.VILLNAME" name="VILLNAME" style="height:30px; line-height:30px; width:240px; margin-top:5px;" />
+            </td>
+            <td class="td1">家属关系：</td>
+            <td class="td2">
+                <input type="text" value="@Model.RELATION" name="RELATION" style="height:30px; line-height:30px; width:240px;margin-top:5px;" />
+            </td>
+
+        </tr>
+        <tr>
+
+            <td class="td1">备注：</td>
+            <td class="td2" colspan="3">
+                <input type="text" value="@Model.DEMO" name="DEMO" style="height:30px; line-height:30px; width:560px;margin-top:5px;" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align:center;">
+                <button type="button" class="mybtn" onclick="Save()" style="margin-top:10px;">保存</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<script type="text/javascript">
+    $(function () {
+        $("input[name*=btn]").each(function () {
+            if ('@Model.SZSEX' == '') {
+                if ($(this).val() == '0') {
+                    $(this).prop("checked", true);
+                }
+            } else {
+                if ($(this).val() == '@Model.SZSEX') {
+                    $(this).prop("checked", true);
+                }
+            }
+        })
+        $("input[name*=btnFire]").each(function () {
+            if ('@Model.ISFIRE' == '') {
+                if ($(this).val() == '0') {
+                    $(this).prop("checked", true);
+                }
+            } else {
+                if ($(this).val() == '@Model.ISFIRE') {
+                    $(this).prop("checked", true);
+                }
+            }
+        })
+        $("input[name*=btnQfyx]").each(function () {
+            if ('@Model.QFYX' == '') {
+                if ($(this).val() == '0') {
+                    $(this).prop("checked", true);
+                }
+            } else {
+                if ($(this).val() == '@Model.QFYX') {
+                    $(this).prop("checked", true);
+                }
+            }
+        })
+        $("#SWDATE").val($.GetTime('@Model.SWDATE'));
+    })
+    //判断文本框
+    function Valid() {
+        if ($("#VILLNAME").val() == "") {
+            layer.msg("村庄名称不能为空！");
+            return false;
+        }
+        if ($("#SZNAME").val() == "") {
+            layer.msg("死者名称不能为空！");
+            return false;
+        }
+        if ($("#SWDATE").val() == "") {
+            layer.msg("死亡时间不能为空！");
+            return false;
+        }
+        if ($("#JSNAME").val() == "") {
+            layer.msg("家属姓名不能为空！");
+            return false;
+        }
+        if ($("#JSPHONE").val() == "") {
+            layer.msg("家属电话不能为空！");
+            return false;
+        }
+        if ($("#RELATION").val() == "") {
+            layer.msg("家属关系不能为空！");
+            return false;
+        }
+        return true;
+    }
+    function Save() {
+        $("input[name*=btn]").each(function () {
+            if ($(this).prop("checked")) {
+                $("#SZSEX").val($(this).val())
+            }
+        })
+        $("input[name*=btnFire]").each(function () {
+            if ($(this).prop("checked")) {
+                $("#ISFIRE").val($(this).val())
+            }
+        })
+        $("input[name*=btnQfyx]").each(function () {
+            if ($(this).prop("checked")) {
+                $("#QFYX").val($(this).val())
+            }
+        })
+        if (Valid()) {
+            $.ajax({
+                url: "/Home/Save",
+                type: "post",
+                data: $('#form').serialize(),
+                success: function (data) {
+                    if (data != "") {
+                        parent.Search();
+                        layer.msg("修改成功！");
+                    } else {
+                        layer.msg("修改失败！");
+                    }
+                }
+            });
+        }
+    }
+</script>

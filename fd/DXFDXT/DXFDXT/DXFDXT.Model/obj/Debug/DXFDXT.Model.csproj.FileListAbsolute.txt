@@ -1,0 +1,5 @@
+D:\fd\DXFDXT\DXFDXT\DXFDXT.Model\bin\Debug\DXFDXT.Model.dll
+D:\fd\DXFDXT\DXFDXT\DXFDXT.Model\bin\Debug\DXFDXT.Model.pdb
+D:\fd\DXFDXT\DXFDXT\DXFDXT.Model\obj\Debug\DXFDXT.Model.csprojResolveAssemblyReference.cache
+D:\fd\DXFDXT\DXFDXT\DXFDXT.Model\obj\Debug\DXFDXT.Model.dll
+D:\fd\DXFDXT\DXFDXT\DXFDXT.Model\obj\Debug\DXFDXT.Model.pdb

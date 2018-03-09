@@ -1,0 +1,16 @@
+div.header{margin:0;position:relative;height: 80px; line-height:80px; text-align: left; text-indent: 60px; background-color: #222737; color: #fff; font-size: 30px;}
+
+.main-box{padding:90px 10px 35px 10px;width:100%;height: 100%;min-width:1180px;background:#e3e3e3; overflow: auto;}
+footer.footer{position:fixed; bottom:0;height: 35px; width: 100%; background: #fff;text-align: center; font-size: 14px; color:#333; line-height: 40px; box-shadow: 0px -1px 10px #e3e3e3;}
+
+/***project***/
+.project-box{position:relative; width:100%; height: 100%;}
+.project-left{position: absolute; left:10px; top:10px;width: 500px; bottom: 10px;}
+ .table-select .form-group{height: 38px; margin-bottom: 0; }
+  .table-select .form-group div{padding:0 5px;}
+  .table-select .btn-box{margin:0;}
+  .table-box{border-top:2px solid #0899d6;}
+.project-right{margin-left: 510px; height: 100%; overflow-y:auto;}
+.map-box{position:relative;overflow: hidden;}
+.map-btn{position: absolute; top:10px; right: 10px;}
+.map{width:100%; height: 100%; border:1px solid #cecece; border-radius:3px;}
