@@ -1,0 +1,305 @@
+﻿<link href="~/Content/Styles/main.css" rel="stylesheet" />
+<script src="~/Content/Scripts/jquery-1.8.2.js"></script>
+<script src="~/Content/Scripts/ol/turf.js"></script>
+<input type="hidden" id="type" value="@ViewBag.type" />
+<style>
+    .btn{
+        display: inline-block;
+        background: #f9fafc;
+        border-radius: 3px;
+        line-height: 28px;
+        padding: 0 2px;
+        font-size: 15px;
+        border: 2px solid #53b867;
+        color: #53b867;
+        width:80px;
+        text-align:center;
+        cursor:pointer;
+        margin-top:3px;
+    }
+    .inputtext {
+        border: 1px solid #b8b8b8;
+        height: 24px;
+        border-radius: 2px;
+
+    }
+</style>
+<div>
+    <div style="text-align:center;"><input type="button" id="draw" class="btn" value="绘制" /></div>
+</div>
+<div class="rDiv" style="text-align:center;">
+    <label>半径(米)：</label>
+    <input type="number" class="inputtext" id="r" />
+</div>
+<div style="text-align:center;">
+    <input type="button" id="analysis"  class="btn"  value="分析" />
+</div>
+<script>
+    var drawTool;//绘制工具
+    var gjFormat = new parent.ol.format.GeoJSON();;
+    var bufferLayer;//缓冲及绘制图形
+    var drawFeature,//绘制的图形
+        bufferFeature;//缓冲图形
+    var coords;
+    var featureResults = [];
+    var qLayers = 'sf:yjbncs,sf:yjjhd,sf:yjwz,sf:yjyy,sf:yjzb';
+    $(function () {
+        var type = $('#type').val();
+        bufferLayer = parent.bufferLayer;
+        switch (type) {
+            case 'point':
+                $('.rDiv').show();
+                $('#draw').click(function () {
+                    drawPosition('Point');
+                });
+                break;
+            case 'line':
+                $('.rDiv').show();
+                $('#draw').click(function () {
+                    drawPosition('LineString');
+                });
+                break;
+            case 'polygon':
+                $('.rDiv').hide();
+                $('#draw').click(function () {
+                    drawPosition('Polygon');
+                });
+                break;
+            default:
+                break;
+        }
+        $('#analysis').click(function () {
+            analysis();
+        });
+
+    })
+    // 绘制图形
+    function drawPosition(type) {
+        // body...
+        fireCoord = null;
+        // 清空图层
+        bufferLayer.getSource().clear();
+        bufferFeature = null;
+        //分析结果为空
+        featureResults = [];
+        coords = null;
+        if (drawTool) return;
+        drawTool = new parent.ol.interaction.Draw({
+            source: bufferLayer.getSource(),
+            type: type
+            //style: new parent.ol.style.Style({
+            //    image: new parent.ol.style.Icon({
+            //        src: document.getElementById('fire').src,
+            //        anchor: [0.5, 1]
+            //    })
+            //})
+        });
+        parent.map.addInteraction(drawTool);
+        drawTool.on('drawend', function (e) {
+            // body...
+            parent.map.removeInteraction(drawTool);
+            drawTool = null;
+            drawFeature = e.feature;
+            coords = e.feature.getGeometry().getCoordinates();
+            //var overlayEle = document.createElement("img");
+            //overlayEle.src = "~/Content/Images/model/1.gif";
+            //var overlay = new parent.ol.Overlay({
+            //    element: overlayEle,
+            //    position: fireCoord,
+            //    offset: [-20, -20]
+            //})
+            //parent.map.addOverlay(overlay);
+
+        });
+    }
+    var locateF;
+    //分析
+    function analysis() {
+        if (!drawFeature) {
+            layer.msg('请绘制缓冲图形');
+            return;
+        }
+        if (featureResults.length > 0) {
+            featureResults.forEach(function (item) {
+                bufferLayer.getSource().removeFeature(item);
+            })
+            featureResults = [];
+        }
+        //if (bufferFeature) {
+        //    bufferLayer.getSource().removeFeature(bufferFeature);
+        //    bufferFeature = null;
+        //}
+        if ($('#type').val() === "polygon") {
+            bufferFeature = drawFeature;
+        } else {
+            var r = $('#r').val();
+            if (!r) {
+                layer.msg('请设置缓冲半径！');
+                return;
+            }
+            if ($('#type').val() === "point") {
+                bufferFeature = turf.buffer(turf.toWgs84(turf.point(coords)), parseFloat(r) / 1000, { units: 'kilometers' });
+                bufferFeature = new parent.ol.Feature({ geometry: new parent.ol.geom.Polygon(turf.toMercator(bufferFeature).geometry.coordinates) });
+            } else {
+                bufferFeature = turf.buffer(turf.toWgs84(turf.lineString(coords)), parseFloat(r) / 1000, { units: 'kilometers' });
+                bufferFeature = new parent.ol.Feature({ geometry: new parent.ol.geom.Polygon(turf.toMercator(bufferFeature).geometry.coordinates) });
+            }
+            bufferLayer.getSource().addFeature(bufferFeature);
+        }
+        parent.map.getView().fit(bufferFeature.getGeometry(), parent.map.getSize());
+        var featureRequest = new parent.ol.format.WFS().writeGetFeature({
+            srsName: 'EPSG:4326',
+            featureNS: 'zjk',
+            featurePrefix: 'sf',
+            featureTypes: qLayers.split(','),
+            outputFormat: 'application/json',
+            filter: parent.ol.format.filter.intersects(
+                'the_geom',
+                new parent.ol.geom.Polygon(turf.toWgs84(turf.polygon(bufferFeature.getGeometry().getCoordinates())).geometry.coordinates)
+            )
+        });
+        fetch(parent.geoserverUrl + 'wfs', {
+            method: 'POST',
+            body: new XMLSerializer().serializeToString(featureRequest)
+        }).then(function (response) {
+            return response.json();
+        }).then(function (json) {
+            if (json.length < 1) {
+                layer.msg('该范围无数据！');
+                return;
+            }
+            var featu = new parent.ol.format.GeoJSON().readFeatures(json);
+            console.log(featu);
+            //bufferLayer.getSource().addFeatures(featu);
+            parent.map.getView().fit(bufferFeature.getGeometry(), parent.map.getSize());
+            var da = featu;
+            var htm = '<div id="results"><table>';
+            htm += '<tr>';
+            htm += '<th style="width:120px;">名称</th>';
+            htm += '<th style="width:120px;">类型</th>';
+            htm += '<th style="display:none;">id</td>';
+            //htm += '<th style="width:120px;">纬度</td>';
+            //htm += '<th style="width:80px;">α(Bq/㎝²)</td>';
+            //htm += '<th style="width:80px;">β(Bq/㎝²)</td>';
+            //htm += '<th style="width:80px;">γ(nSv/h)</td>';
+            //htm += '<th style="width:80px;">Cs-137</td>';
+            //htm += '<th style="width:80px;">Sr-90</td>';
+            //htm += '<th style="width:80px;">H3</td>';
+            //htm += '<th style="width:80px;">Pu</td>';
+            //htm += '<th style="width:80px;">U(mg/kg)</td>';
+            htm += '</tr></table><table style="over-flow:auto;">';
+            featureResults = [];
+            da.forEach(function (feature, index) {
+                var type = feature.getId().split('.')[0];
+                var title;
+                switch (type) {
+                    case 'yjyy':
+                        title = '医院';
+                        break;
+                    case 'yjzb':
+                        title = '应急装备';
+                        break;
+                    case 'yjwz':
+                        title = '应急物资';
+                        break;
+                    case 'yjjhd':
+                        title = '救护队';
+                        break;
+                    case 'yjbncs':
+                        title = '避难场所';
+                        break;
+                    default:
+                        title = '';
+                        break;
+
+                }
+                // statements
+                var POSITIONNA = feature.getProperties().POSITIONNA;
+                var id = feature.getId();
+                var geo = feature.getGeometry().getCoordinates();
+                var newGeo = new parent.ol.geom.Point(turf.toMercator(turf.point(geo)).geometry.coordinates);
+                feature.setGeometry(newGeo);
+                feature.setProperties({ 'title': title });
+                featureResults.push(feature);
+
+                //var x = feature.properties.x;
+                //var y = feature.properties.y;
+                //var type = feature.properties.type;
+                //var alpha = feature.properties.alpha;
+                //var beta = feature.properties.beta;
+                //var gamma = feature.properties.gamma;
+                //var cs137 = feature.properties.cs137;
+                //var sr90 = feature.properties.sr90;
+                //var h3 = feature.properties.h3;
+                //var pu = feature.properties.pu;
+                //var u = feature.properties.u;
+                if (!POSITIONNA) POSITIONNA = '';
+                //if (!x) x = '';
+                //if (!y) y = '';
+                //if (!type) type = '';
+                //if (!alpha) alpha = '';
+                //if (!beta) beta = '';
+                //if (!gamma) gamma = '';
+                //if (!cs137) cs137 = '';
+                //if (!sr90) sr90 = '';
+                //if (!h3) h3 = '';
+                //if (!pu) pu = '';
+                //if (!u) u = '';
+                htm += '<tr>';
+                htm += '<td style="width:120px;">' + POSITIONNA + '</td>';
+                htm += '<td style="width:120px;">' + title + '</td>';
+                htm += '<td style="display:none;">' + id + '</td>';
+                //htm += '<td style="width:120px;">' + y + '</td>';
+
+                //htm += '<td style="width:80px;">' + alpha + '</td>';
+                //htm += '<td style="width:80px;">' + beta + '</td>';
+                //htm += '<td style="width:80px;">' + gamma + '</td>';
+                //htm += '<td style="width:80px;">' + cs137 + '</td>';
+                //htm += '<td style="width:80px;">' + sr90 + '</td>';
+                //htm += '<td style="width:80px;">' + h3 + '</td>';
+                //htm += '<td style="width:80px;">' + pu + '</td>';
+                //htm += '<td style="width:80px;">' + u + '</td>';
+                htm += '</tr>';
+            });
+            bufferLayer.getSource().addFeatures(featureResults);
+            htm += '</table></div>';
+            ////layer.closeAll();
+            parent.layer.open({
+                type: 1,
+                title: '分析结果',
+                area: ['280px', '300px'],
+                offset: 'r',
+                shade: 0,
+                content: htm,
+                end: function () {
+
+                }
+            });
+            parent.$('#results tr').on("click", function () {
+                var id = $(this).children('td').eq(2).text();
+                $(this).siblings().css("color", 'rgb(51, 51, 51)');
+                $(this).css("color", 'blue');
+                if (id) {
+                    var selF = bufferLayer.getSource().getFeatureById(id);
+                    var src = selF.getProperties().iconsrc;
+                    if (locateF) {
+                        bufferLayer.getSource().removeFeature(locateF);
+                        locateF = null;
+                    }
+                    locateF = new parent.ol.Feature({
+                        geometry: selF.getGeometry()
+                    });
+                    locateF.setStyle(new parent.ol.style.Style({
+                        image: new parent.ol.style.Icon({
+                            src: "/Content/Images/Search/selF.png",
+                            crossOrigin: 'anonymous',
+                            size: [32, 32],
+                            anchor: [0.5, 1]
+                        })
+                    }));
+                    bufferLayer.getSource().addFeature(locateF);
+                }
+            });
+        });
+    }
+</script>
