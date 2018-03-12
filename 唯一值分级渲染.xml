@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld:StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" version="1.0.0">
+    <sld:UserLayer>
+        <sld:LayerFeatureConstraints>
+            <sld:FeatureTypeConstraint/>
+        </sld:LayerFeatureConstraints>
+        <sld:UserStyle>
+            <sld:Name>zjk county</sld:Name>
+            <sld:IsDefault>1</sld:IsDefault>
+            <sld:FeatureTypeStyle>
+                <sld:Name>group 0</sld:Name>
+                <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
+                <sld:SemanticTypeIdentifier>generic:geometry</sld:SemanticTypeIdentifier>
+                <sld:SemanticTypeIdentifier>colorbrewer:quantile:oranges</sld:SemanticTypeIdentifier>
+                <sld:Rule>
+                    <sld:Name>rule01</sld:Name>
+                    <sld:Title>-25..-20</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-25</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-20</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#1adad6</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule02</sld:Name>
+                    <sld:Title>-20..-15</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-20</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-15</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#3491f3</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule03</sld:Name>
+                    <sld:Title>-10..-5</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-10</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-5</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#94cff2</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule04</sld:Name>
+                    <sld:Title>-5..0</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>-5</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#bfe6fb</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule05</sld:Name>
+                    <sld:Title>0..5</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>5</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#fdffc9</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+              <sld:Rule>
+                    <sld:Name>rule06</sld:Name>
+                    <sld:Title>5..10</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>5</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>10</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#feef9f</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+              <sld:Rule>
+                    <sld:Name>rule07</sld:Name>
+                    <sld:Title>10..15</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>10</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>15</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#fee379</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+              <sld:Rule>
+                    <sld:Name>rule08</sld:Name>
+                    <sld:Title>15..20</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>15</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>20</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#fecc51</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+               <sld:Rule>
+                    <sld:Name>rule09</sld:Name>
+                    <sld:Title>20..25</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>20</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>25</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#f79700</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+               <sld:Rule>
+                    <sld:Name>rule09</sld:Name>
+                    <sld:Title>25..30</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>25</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>weight</ogc:PropertyName>
+                                <ogc:Literal>30</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PolygonSymbolizer>
+                        <sld:Fill>
+                            <sld:CssParameter name="fill">#f27500</sld:CssParameter>
+                            <sld:CssParameter name="fill-opacity">1</sld:CssParameter>
+                        </sld:Fill>
+                    </sld:PolygonSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:UserLayer>
+</sld:StyledLayerDescriptor>
